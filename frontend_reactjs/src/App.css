@@ -111,6 +111,237 @@
 }
 
 /* ---- Tic Tac Toe Game Styles ---- */
+
+/* ---- Game Selection Styles ---- */
+.game-selector {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  gap: 18px;
+}
+
+.game-selector-btn {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 10px 32px;
+  margin-bottom: 8px;
+  margin-right: 0;
+  margin-left: 0;
+  cursor: pointer;
+  transition: all 0.18s;
+  box-shadow: 0 2px 4px rgba(25,118,210,.02);
+}
+
+.game-selector-btn.selected,
+.game-selector-btn:focus {
+  background: var(--button-accent-bg);
+  color: #fff;
+  box-shadow: 0 0 0 2px var(--button-accent-bg),0 1.5px 6px var(--ttt-cell-shadow);
+  outline: none;
+}
+
+.game-selector-btn:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.game-selector-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ---- Snake and Ladder Styles ---- */
+.sal-container {
+  background: var(--bg-secondary);
+  border-radius: 20px;
+  margin: 40px auto 0;
+  padding: 26px 11px 13px 11px;
+  box-shadow: 0 2px 24px 0 rgba(25,118,210,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(430px,98vw);
+}
+
+.sal-title {
+  color: var(--ttt-title);
+  font-size: 2.1rem;
+  margin-bottom: 12px;
+  font-weight: 570;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-top: 0;
+}
+
+/* Controls and Status */
+.sal-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 11px;
+}
+
+.btn-sal {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  padding: 7px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  margin-right: 2px;
+  transition: background 0.13s, box-shadow 0.15s, color 0.11s;
+  box-shadow: 0 1px 2px var(--ttt-cell-shadow);
+  outline: none;
+}
+.btn-sal:active {
+  opacity: 0.95;
+}
+.btn-sal:disabled {
+  background: var(--button-secondary-bg);
+  color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.sal-dice {
+  font-size: 1.1rem;
+  min-width: 64px;
+  color: var(--button-accent-bg);
+  font-weight: 600;
+  padding-left: 10px;
+}
+
+.sal-status {
+  margin-bottom: 9px;
+  font-size: 1.15rem;
+  color: var(--button-secondary-bg);
+  font-weight: 500;
+  min-height: 25px;
+  margin-top: 0;
+}
+
+.sal-instructions {
+  font-size: 1.01rem;
+  color: var(--text-secondary);
+  margin-top: 12px;
+  padding-bottom: 4px;
+  text-align: center;
+}
+
+/* Board */
+.sal-board {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5px;
+  border-radius: 14px;
+  border: 2px solid var(--ttt-board-border);
+  background: #fff;
+  box-shadow: 0 1.5px 7px var(--ttt-cell-shadow);
+}
+
+.sal-board-row {
+  display: flex;
+}
+
+.sal-cell {
+  width: 33px;
+  height: 33px;
+  border: 1.06px solid var(--ttt-board-border);
+  position: relative;
+  font-size: 0.88rem;
+  text-align: right;
+  background: #fafbfe;
+  transition: box-shadow 0.13s;
+  border-radius: 4px;
+  overflow: visible;
+  margin: 1px;
+  box-shadow: 0 0.8px 1.2px var(--ttt-cell-shadow);
+}
+.sal-cell-goal {
+  background: #e3ffe9 !important;
+  border: 2px solid var(--button-accent-bg) !important;
+}
+.sal-cell.ladder {
+  background: #f2f9ff;
+}
+.sal-cell.snake {
+  background: #fff3ec;
+}
+.sal-cell-num {
+  position: absolute;
+  left: 4px;
+  top: 3px;
+  font-size: 0.72rem;
+  color: #b0b3b7;
+  font-weight: 400;
+}
+.sal-players {
+  position: absolute;
+  bottom: 2.5px;
+  right: 4px;
+  left: 4px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 3px;
+}
+.sal-player {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  font-size: 0.74rem;
+  line-height: 15px;
+  font-weight: 600;
+  text-align: center;
+  margin-left: 1.5px;
+  margin-right: 1.5px;
+  box-shadow: 0 0.5px 1px rgba(0,0,0,0.04);
+}
+
+.sal-ladder-symbol {
+  color: #1976d2;
+  font-size: 1.1rem;
+  margin-right: 1px;
+  margin-left: 2.5px;
+  vertical-align: middle;
+  user-select: none;
+}
+.sal-snake-symbol {
+  color: #e87a41;
+  font-size: 1.15rem;
+  margin-right: 1.2px;
+  margin-left: 2.5px;
+  vertical-align: middle;
+  user-select: none;
+}
+
+@media (max-width: 450px) {
+  .sal-container {
+    width: 98vw;
+    padding: 10px 1px 10px;
+  }
+  .sal-title {
+    font-size: 1.23rem;
+    margin-bottom: 7px;
+  }
+  .sal-board .sal-cell {
+    width: 22px;
+    height: 22px;
+    font-size: 0.68rem;
+  }
+  .sal-player {
+    width: 9.5px;
+    height: 9.5px;
+    font-size: 0.56rem;
+    line-height: 10px;
+  }
+}
 .ttt-container {
   background: var(--bg-secondary);
   margin: 40px auto 0;

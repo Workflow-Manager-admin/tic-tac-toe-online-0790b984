@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import SnakeAndLadder from "./SnakeAndLadder";
 
 /** Color variables (as per the palette):
  *  primary: #1976d2
@@ -169,20 +170,24 @@ function computeComputerMove(squares) {
   return pick;
 }
 
-// PUBLIC_INTERFACE
+/**
+ * Main App with game selector for Tic Tac Toe and Snake & Ladder.
+ * PUBLIC_INTERFACE
+ */
 function App() {
-  // Game setup state
+  // Game switching state
+  const [selectedGame, setSelectedGame] = useState("tic-tac-toe");
+
+  // States for Tic Tac Toe (preserved if user switches games)
   const [gameMode, setGameMode] = useState(GAME_MODE.LOCAL);
   const [playerChar, setPlayerChar] = useState(PLAYER_X);
-
-  // Game state
   const [gameStarted, setGameStarted] = useState(false);
   const [squares, setSquares] = useState(Array(9).fill(null)); // board
   const [xIsNext, setXIsNext] = useState(true);
   const [winner, setWinner] = useState(null);
   const [draw, setDraw] = useState(false);
 
-  // Effect: restart board on start or restart
+  // Reset TTT board on start or restart
   useEffect(() => {
     setSquares(Array(9).fill(null));
     setXIsNext(playerChar === PLAYER_X);
@@ -191,51 +196,66 @@ function App() {
     // eslint-disable-next-line
   }, [gameStarted, playerChar]);
 
-  // Effect: check win/draw
+  // TTT: Winner/Draw
   useEffect(() => {
+    if (selectedGame !== "tic-tac-toe") return;
     const w = calculateWinner(squares);
     if (w) setWinner(w);
     else if (calculateDraw(squares)) setDraw(true);
-  }, [squares]);
+  }, [squares, selectedGame]);
 
-  // Effect: let computer play if needed
+  // TTT: Computer-move logic
   useEffect(() => {
     if (
-      gameStarted &&
-      gameMode === GAME_MODE.COMPUTER &&
-      !winner &&
-      !draw
-    ) {
-      // Whose turn is it? If computer, play.
-      const currentChar = xIsNext ? PLAYER_X : PLAYER_O;
-      const computerChar = playerChar === PLAYER_X ? PLAYER_O : PLAYER_X;
-      if (currentChar === computerChar) {
-        const timeout = setTimeout(() => {
-          const move = computeComputerMove(squares);
-          if (move !== null) {
-            handleSquareClick(move);
-          }
-        }, 500); // small pause for "thinking"
-        return () => clearTimeout(timeout);
-      }
+      selectedGame !== "tic-tac-toe" ||
+      !gameStarted ||
+      gameMode !== GAME_MODE.COMPUTER ||
+      winner ||
+      draw
+    )
+      return;
+    const currentChar = xIsNext ? PLAYER_X : PLAYER_O;
+    const computerChar = playerChar === PLAYER_X ? PLAYER_O : PLAYER_X;
+    if (currentChar === computerChar) {
+      const timeout = setTimeout(() => {
+        const move = computeComputerMove(squares);
+        if (move !== null) {
+          handleSquareClick(move);
+        }
+      }, 500);
+      return () => clearTimeout(timeout);
     }
     // eslint-disable-next-line
-  }, [xIsNext, gameStarted, gameMode, playerChar, winner, draw, squares]);
+  }, [
+    xIsNext,
+    gameStarted,
+    gameMode,
+    playerChar,
+    winner,
+    draw,
+    squares,
+    selectedGame,
+  ]);
 
-  // PUBLIC_INTERFACE
+  // Tic Tac Toe game handlers
   const handleSquareClick = (idx) => {
-    if (!gameStarted || squares[idx] || winner || draw) return;
+    if (
+      !gameStarted ||
+      squares[idx] ||
+      winner ||
+      draw ||
+      selectedGame !== "tic-tac-toe"
+    )
+      return;
     const newSquares = [...squares];
     newSquares[idx] = xIsNext ? PLAYER_X : PLAYER_O;
     setSquares(newSquares);
     setXIsNext((prev) => !prev);
   };
 
-  // PUBLIC_INTERFACE
   const handleStart = () => {
     setGameStarted(true);
   };
-  // PUBLIC_INTERFACE
   const handleRestart = () => {
     setGameStarted(false);
     setTimeout(() => {
@@ -243,37 +263,59 @@ function App() {
     }, 10);
   };
 
+  // PUBLIC_INTERFACE
+  function handleGameSelect(game) {
+    setSelectedGame(game);
+  }
+
   return (
     <div className="App">
-      <div className="ttt-container">
-        <h1 className="ttt-title">Tic Tac Toe</h1>
-        <Controls
-          gameMode={gameMode}
-          setGameMode={setGameMode}
-          playerChar={playerChar}
-          setPlayerChar={setPlayerChar}
-          gameStarted={gameStarted}
-          onStart={handleStart}
-          onRestart={handleRestart}
-        />
-        <Board
-          squares={squares}
-          onSquareClick={handleSquareClick}
-          disabled={!gameStarted || !!winner || !!draw}
-        />
-        <StatusBar
-          status={winner ? "win" : draw ? "draw" : "ongoing"}
-          winner={winner}
-          nextPlayer={
-            winner || draw
-              ? null
-              : xIsNext
-              ? PLAYER_X
-              : PLAYER_O
-          }
-          draw={draw}
-        />
+      <div className="game-selector">
+        <button
+          className={`game-selector-btn${
+            selectedGame === "tic-tac-toe" ? " selected" : ""
+          }`}
+          onClick={() => handleGameSelect("tic-tac-toe")}
+        >
+          Tic Tac Toe
+        </button>
+        <button
+          className={`game-selector-btn${
+            selectedGame === "snake-and-ladder" ? " selected" : ""
+          }`}
+          onClick={() => handleGameSelect("snake-and-ladder")}
+        >
+          Snake &amp; Ladder
+        </button>
       </div>
+      {selectedGame === "tic-tac-toe" && (
+        <div className="ttt-container">
+          <h1 className="ttt-title">Tic Tac Toe</h1>
+          <Controls
+            gameMode={gameMode}
+            setGameMode={setGameMode}
+            playerChar={playerChar}
+            setPlayerChar={setPlayerChar}
+            gameStarted={gameStarted}
+            onStart={handleStart}
+            onRestart={handleRestart}
+          />
+          <Board
+            squares={squares}
+            onSquareClick={handleSquareClick}
+            disabled={!gameStarted || !!winner || !!draw}
+          />
+          <StatusBar
+            status={winner ? "win" : draw ? "draw" : "ongoing"}
+            winner={winner}
+            nextPlayer={
+              winner || draw ? null : xIsNext ? PLAYER_X : PLAYER_O
+            }
+            draw={draw}
+          />
+        </div>
+      )}
+      {selectedGame === "snake-and-ladder" && <SnakeAndLadder />}
     </div>
   );
 }
